@@ -1,0 +1,67 @@
+{% extends "../base.html" %}
+
+{% block extrajs %}
+<script src="/static/tracker/jquery-ui-1.8.4.custom.min.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="/static/tracker/tracker/editscreen.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/tracker/tracker/channel.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/tracker/tracker/instrument.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/tracker/tracker/phrase.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/tracker/tracker/song.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="/static/tracker/init.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="/static/tracker/audiodata.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/tracker/audioSystem.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/tracker/json2.js" type="text/javascript" charset="utf-8"></script>
+
+<link rel="stylesheet" href="/static/tracker/jquery-ui-1.8.4.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
+{% endblock %}
+
+{% block content %}
+<div class='display'>
+	{{song.name}}<br><br>
+</div>
+<div class="display" style='float:right'>
+	<a href='/tracker/'>&lt; songs</a>
+</div>
+<div id="editor_container">
+	<div id="song_ed" class='editor_screen'>
+		<table></table>
+	</div>
+	<div id="phrase_ed" class='editor_screen inactive'>
+		<table border="0">
+			<tr id='pe_0'>
+				<td class = 'pb_indicator'>&nbsp;</td>
+				<td class = 'note'>---</td>
+				<td class = 'instrument'>--</td>
+				<td class = 'vol'>--</td>
+				<td class = 'effect_type'>-</td>
+				<td class = 'effect_val'>----</td>
+			</tr>
+		</table>
+	</div>	
+	<div id="inst_ed" class='editor_screen inactive'>
+		<table border="0">
+			<tr id='vol'>
+				<td class = 'name'>VOL</td>
+				<td class = 'data'>80</td>
+			</tr>
+			<tr id='osc'>
+				<td class = 'name'>OSC</td>
+				<td class = 'data'>SIN</td>
+			</tr>
+		</table>
+	</div>	
+</div>
+<div class='clear'></div>
+<div id="current_octave" class='display'>
+	OCTAVE: <span class='data'>4</span>
+</div>
+<div id="save" class='display'>
+	SAVE <span id='completed'>COMPLETE</span>
+</div>
+<script type="text/javascript" charset="utf-8">
+	var songData = '{{song.data}}';
+</script>
+{% endblock %}

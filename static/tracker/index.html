@@ -1,0 +1,66 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="jquery-ui-1.8.4.custom.min.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="tracker/editscreen.js" type="text/javascript" charset="utf-8"></script>
+	<script src="tracker/channel.js" type="text/javascript" charset="utf-8"></script>
+	<script src="tracker/instrument.js" type="text/javascript" charset="utf-8"></script>
+	<script src="tracker/phrase.js" type="text/javascript" charset="utf-8"></script>
+	<script src="tracker/song.js" type="text/javascript" charset="utf-8"></script>
+	
+
+	<script src="init.js" type="text/javascript" charset="utf-8"></script>
+
+	<script src="audiodata.js" type="text/javascript" charset="utf-8"></script>
+	<script src="audioSystem.js" type="text/javascript" charset="utf-8"></script>
+	<script src="json2.js" type="text/javascript" charset="utf-8"></script>
+	
+	<link rel="stylesheet" href="jquery-ui-1.8.4.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	<link rel="stylesheet" href="screen.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+<div id="a_adsr" class='slider'></div>
+
+<div id="editor_container">
+	<div id="song_ed" class='editor_screen'>
+		<table></table>
+	</div>
+	<div id="phrase_ed" class='editor_screen inactive'>
+		<table border="0">
+			<tr id='pe_0'>
+				<td class = 'pb_indicator'>&nbsp;</td>
+				<td class = 'note'>---</td>
+				<td class = 'instrument'>--</td>
+				<td class = 'vol'>--</td>
+				<td class = 'effect1'>----</td>
+				<td class = 'effect2'>----</td>
+			</tr>
+		</table>
+	</div>	
+	<div id="inst_ed" class='editor_screen inactive'>
+		<table border="0">
+			<tr id='vol'>
+				<td class = 'name'>VOL</td>
+				<td class = 'data'>80</td>
+			</tr>
+			<tr id='osc'>
+				<td class = 'name'>OSC</td>
+				<td class = 'data'>SIN</td>
+			</tr>
+		</table>
+	</div>	
+</div>
+<div class='clear'></div>
+<div id="current_octave" class='display'>
+	OCTAVE: <span class='data'>4</span>
+</div>
+<div id="save" class='display'>
+	SAVE
+</div>
+<div id="load" class='display'>
+	LOAD
+</div><br><br><br>
+<textarea name="output" rows="8" cols="40" id='data'></textarea>
+</body>
+</html>

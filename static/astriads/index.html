@@ -1,0 +1,122 @@
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script src="dsp/dsp.js" type="text/javascript" charset="utf-8"></script>
+	<script src="audiodata.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+		var sampleRate = 44100;
+		var bufferSize = 1024;
+		var bufferTime = Math.floor(1000 / (sampleRate / bufferSize));
+
+		var amplitude  = 0.1; // Default amplitude at 70%
+		var silence = new Float32Array(bufferSize);
+		var bpm = 92;
+		var secondsPerBeat = 60.0/bpm;
+		var samplesPerBeat = sampleRate * secondsPerBeat * 0.25; // to get quarter notes
+		// Setup audio channel
+		var output = new Audio();
+		if ( typeof output.mozSetup === 'function' ) {
+		  output.mozSetup(1, sampleRate);
+		}
+
+		var s = new Sampler('audio/riddim.ogg', bufferSize, sampleRate, 0, 1, 0, 1, DSP.FW);
+		var s2 = new Sampler('audio/Telephoneecho.ogg', bufferSize, sampleRate, 0, 1, 0, 1, DSP.FW);
+		
+		s.envelope = new ADSR(0, 0, 1, Infinity, 0, sampleRate);
+//		s.envelope = new ADSR(0, 0, 1, Infinity, 0, sampleRate);
+		//s.
+		//s.envelope.disable(); // turn off so it does not auto trigger
+		var currentFrame = 0;
+		var playingStart = false;
+		var shotStart = 0;
+		function TrackerSource() {
+			this.audioParameters = new AudioParameters(1, sampleRate);
+			this.read = function(soundData) {
+				var size = soundData.length;
+				for (var i=0; i < soundData.length; i++) {
+					currentFrame++;
+					if (s.loaded) {
+						if (!playingStart) {
+							playingStart = currentFrame;
+						};
+						var remainder = currentFrame%Math.floor(samplesPerBeat);
+						if(remainder == 0 && SPACE_PRESSED){
+							shotStart = currentFrame;
+						}
+						soundData[i] = s.samples[currentFrame%s.samples.length]*0.5;
+						if (currentFrame-shotStart < s2.samples.length) {
+							soundData[i] += s2.samples[currentFrame-shotStart]*0.5;							
+						};
+					}else{
+						soundData[i] = 0;
+					}
+				};
+				return size;
+			};
+		}
+		var audioSource = new TrackerSource();
+		var audioDestination = new AudioDataDestination();
+		audioDestination.autoLatency = true;
+		audioDestination.writeAsync(audioSource);
+		var vel = {d:0.0, m:1.0};
+		var pos = {x:100.0, y: 100.0, rot: 0.0}
+		var accel = {d:Math.PI/2, m:0};
+		var UP_PRESSED = false;
+		var RIGHT_PRESSED = false;
+		var LEFT_PRESSED = false;
+		var SPACE_PRESSED = false;
+		// graphics!
+		$(document).ready(function(){
+			$('*').focus().keydown(function(event) {
+				if (event.keyCode == 32) {SPACE_PRESSED = true};
+				if (event.keyCode == 38) {UP_PRESSED = true};
+				if (event.keyCode == 39) {RIGHT_PRESSED = true};
+				if (event.keyCode == 37) {LEFT_PRESSED = true};
+				
+			});
+			$('*').focus().keyup(function(event) {
+				if (event.keyCode == 32) {SPACE_PRESSED = false};
+				if (event.keyCode == 38) {UP_PRESSED = false};
+				if (event.keyCode == 39) {RIGHT_PRESSED = false};
+				if (event.keyCode == 37) {LEFT_PRESSED = false};
+			});
+			var ctx = $('#canvas')[0].getContext("2d");
+			var draw = function(){
+				ctx.clearRect(0,0,200,200); // clear canvas  
+				if (UP_PRESSED) {
+					accel.m -= 2;
+				};
+				if (LEFT_PRESSED) {
+					accel.d -= Math.PI/32;
+				};
+				if (RIGHT_PRESSED) {
+					accel.d += Math.PI/32;
+				};
+				pos.y += accel.m*Math.sin(accel.d);
+				pos.x += accel.m*Math.cos(accel.d);
+				//keep on screen
+				if (pos.y<0) {pos.y = 200};
+				if (pos.x<0) {pos.x = 200};
+				if (pos.y>200) {pos.y = 0};
+				if (pos.x>200) {pos.x = 0};
+				ctx.save();
+				ctx.translate(pos.x, pos.y);
+				ctx.rotate(accel.d);
+				ctx.beginPath();
+				ctx.lineTo(-5, 0);
+				ctx.lineTo(5, -5);
+				ctx.lineTo(5, 5);
+				ctx.closePath();
+				ctx.fill();
+				ctx.restore();
+				accel.m *= 0.9;
+			}
+			setInterval(draw, 50);
+		});
+	</script>
+</head>
+<body>
+	<canvas id="canvas" width="200" height="200" style="border: 2px solid #aaaaaa;"></canvas>
+</body>
+</html>
